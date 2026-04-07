@@ -68,30 +68,43 @@ a {
 
 .brand {
   display: inline-flex;
-  gap: 14px;
   align-items: center;
 }
 
-.brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 1px solid rgba(124, 224, 255, 0.28);
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(124, 224, 255, 0.14), rgba(124, 224, 255, 0.02));
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.95rem;
+.brand-logo-shell,
+.hero-logo-shell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(124, 224, 255, 0.18);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(245, 248, 252, 0.98), rgba(227, 235, 244, 0.96));
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
 }
 
-.brand-copy {
-  display: grid;
-  gap: 2px;
+.brand-logo-shell {
+  padding: 8px 16px;
 }
 
-.brand-copy span {
-  color: var(--muted);
-  font-size: 0.86rem;
+.brand-logo,
+.hero-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.brand-logo {
+  width: 160px;
+}
+
+.hero-logo-shell {
+  width: fit-content;
+  margin-bottom: 24px;
+  padding: 18px 24px;
+}
+
+.hero-logo {
+  width: min(100%, 300px);
 }
 
 .nav {
