@@ -69,42 +69,37 @@ a {
 .brand {
   display: inline-flex;
   align-items: center;
-}
-
-.brand-logo-shell,
-.hero-logo-shell {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(124, 224, 255, 0.18);
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(245, 248, 252, 0.98), rgba(227, 235, 244, 0.96));
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
-}
-
-.brand-logo-shell {
-  padding: 8px 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .brand-logo,
-.hero-logo {
+.hero-logo-ghost {
   display: block;
-  width: 100%;
   height: auto;
 }
 
 .brand-logo {
-  width: 160px;
+  width: 138px;
+  opacity: 0.88;
+  filter: brightness(0) invert(1);
 }
 
-.hero-logo-shell {
-  width: fit-content;
-  margin-bottom: 24px;
-  padding: 18px 24px;
+.hero-copy {
+  position: relative;
+  isolation: isolate;
+  padding-top: 32px;
 }
 
-.hero-logo {
-  width: min(100%, 300px);
+.hero-logo-ghost {
+  position: absolute;
+  top: -22px;
+  left: -26px;
+  width: min(42vw, 260px);
+  opacity: 0.075;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .nav {
@@ -459,6 +454,16 @@ textarea:focus-visible {
   .nav {
     gap: 16px;
     flex-wrap: wrap;
+  }
+
+  .brand-logo {
+    width: 118px;
+  }
+
+  .hero-logo-ghost {
+    left: -10px;
+    top: -6px;
+    width: min(54vw, 190px);
   }
 
   .metrics,
