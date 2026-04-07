@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npx wrangler pages dev .",
-    "deploy": "npx wrangler pages deploy ."
+    "build": "echo \"Worker static asset deploy - no build step required\"",
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy"
   }
 }

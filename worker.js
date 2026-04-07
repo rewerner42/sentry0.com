@@ -58,7 +58,7 @@ const sendWithResend = async ({ apiKey, from, to, replyTo, subject, html, text }
   }
 };
 
-export const onRequestPost = async ({ request, env }) => {
+const handleContact = async (request, env) => {
   try {
     const contentType = request.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
@@ -138,4 +138,16 @@ export const onRequestPost = async ({ request, env }) => {
   } catch (error) {
     return json({ error: error.message || "Unexpected server error." }, 500);
   }
+};
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname === "/api/contact" && request.method === "POST") {
+      return handleContact(request, env);
+    }
+
+    return env.ASSETS.fetch(request);
+  },
 };
