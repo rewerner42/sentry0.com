@@ -20,6 +20,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 132px;
 }
 
 body {
@@ -47,8 +48,9 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 22px 0;
+  padding: 26px 0 18px;
   backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(12, 12, 13, 0.96), rgba(12, 12, 13, 0.84));
 }
 
 .brand {
@@ -65,7 +67,7 @@ a {
 }
 
 .brand-logo {
-  width: 196px;
+  width: 294px;
   opacity: 0.92;
   filter: brightness(0) invert(1);
 }
@@ -89,8 +91,20 @@ a {
   text-transform: uppercase;
 }
 
+.nav a:hover,
+.nav a:focus-visible,
+.service-nav a:hover,
+.service-nav a:focus-visible {
+  color: #ffffff;
+}
+
 .section {
   padding: 64px 0;
+  scroll-margin-top: 132px;
+}
+
+[id] {
+  scroll-margin-top: 132px;
 }
 
 .hero {
@@ -99,6 +113,13 @@ a {
   grid-template-columns: 1.05fr 0.95fr;
   gap: 32px;
   align-items: center;
+}
+
+.services,
+.service-extensions,
+.team,
+.contact {
+  padding-top: 82px;
 }
 
 .eyebrow,
@@ -438,6 +459,10 @@ textarea:focus-visible {
     min-height: auto;
     padding-top: 28px;
   }
+
+  .brand-logo {
+    width: 232px;
+  }
 }
 
 @media (max-width: 720px) {
@@ -457,7 +482,7 @@ textarea:focus-visible {
   }
 
   .brand-logo {
-    width: 150px;
+    width: 196px;
   }
 
   .metrics,
@@ -467,6 +492,11 @@ textarea:focus-visible {
 
   .section {
     padding: 44px 0;
+    scroll-margin-top: 146px;
+  }
+
+  [id] {
+    scroll-margin-top: 146px;
   }
 
   .contact-form,
