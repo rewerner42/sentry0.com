@@ -41,16 +41,21 @@ a {
   margin: 0 auto;
 }
 
-.topbar {
+.topbar-shell {
   position: sticky;
   top: 0;
   z-index: 10;
+  width: 100%;
+  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(12, 12, 13, 0.98), rgba(12, 12, 13, 0.9));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 26px 0 18px;
-  backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(12, 12, 13, 0.96), rgba(12, 12, 13, 0.84));
 }
 
 .brand {
@@ -119,7 +124,7 @@ a {
 .service-extensions,
 .team,
 .contact {
-  padding-top: 82px;
+  padding-top: 36px;
 }
 
 .eyebrow,

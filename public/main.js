@@ -1,6 +1,8 @@
 const form = document.querySelector("#contact-form");
 const statusNode = document.querySelector("#form-status");
 const revealNodes = document.querySelectorAll(".reveal");
+const navLinks = document.querySelectorAll(".nav a[href^='#']");
+const topbarShell = document.querySelector(".topbar-shell");
 
 const setStatus = (message, type = "") => {
   if (!statusNode) return;
@@ -25,6 +27,31 @@ const revealObserver = new IntersectionObserver(
 
 for (const node of revealNodes) {
   revealObserver.observe(node);
+}
+
+const getHeaderOffset = () => {
+  const headerHeight = topbarShell ? topbarShell.getBoundingClientRect().height : 0;
+  return headerHeight + 18;
+};
+
+for (const link of navLinks) {
+  link.addEventListener("click", (event) => {
+    const href = link.getAttribute("href");
+    if (!href) return;
+
+    const target = document.querySelector(href);
+    if (!target) return;
+
+    event.preventDefault();
+
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - getHeaderOffset();
+
+    window.history.replaceState(null, "", href);
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "smooth",
+    });
+  });
 }
 
 if (form) {
