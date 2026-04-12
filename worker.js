@@ -1,3 +1,5 @@
+import { EmailMessage } from "cloudflare:email";
+
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -35,27 +37,25 @@ const verifyTurnstile = async (token, secret, ip) => {
   return response.json();
 };
 
-const sendWithResend = async ({ apiKey, from, to, replyTo, subject, html, text }) => {
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to,
-      reply_to: replyTo,
-      subject,
-      html,
-      text,
-    }),
-  });
+const buildRawEmail = ({ from, to, replyTo, subject, text }) =>
+  [
+    `From: Sentry0 <${from}>`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    replyTo ? `Reply-To: ${replyTo}` : null,
+    "MIME-Version: 1.0",
+    'Content-Type: text/plain; charset="UTF-8"',
+    "Content-Transfer-Encoding: 8bit",
+    "",
+    text,
+  ]
+    .filter(Boolean)
+    .join("\r\n");
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Resend API error: ${errorText}`);
-  }
+const sendWithCloudflareEmail = async ({ binding, from, to, replyTo, subject, text }) => {
+  const raw = buildRawEmail({ from, to, replyTo, subject, text });
+  const message = new EmailMessage(from, to, raw);
+  await binding.send(message);
 };
 
 const handleContact = async (request, env) => {
@@ -97,10 +97,12 @@ const handleContact = async (request, env) => {
       return json({ error: "Turnstile verification failed." }, 400);
     }
 
-    if (!env.RESEND_API_KEY || !env.CONTACT_TO_EMAIL || !env.CONTACT_FROM_EMAIL) {
-      return json({ error: "Email delivery is not fully configured." }, 500);
+    if (!env.SEND_EMAIL) {
+      return json({ error: "Cloudflare Email Service is not configured." }, 500);
     }
 
+    const fromAddress = "hello@sentry0.ai";
+    const recipientAddress = "hello@sentry0.ai";
     const subject = `[Sentry0] ${service} inquiry from ${name}`;
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
@@ -108,10 +110,10 @@ const handleContact = async (request, env) => {
     const safeCompany = escapeHtml(company || "Not provided");
     const safeMessage = escapeHtml(message);
 
-    await sendWithResend({
-      apiKey: env.RESEND_API_KEY,
-      from: env.CONTACT_FROM_EMAIL,
-      to: env.CONTACT_TO_EMAIL,
+    await sendWithCloudflareEmail({
+      binding: env.SEND_EMAIL,
+      from: fromAddress,
+      to: recipientAddress,
       replyTo: email,
       subject,
       text: [
@@ -122,16 +124,15 @@ const handleContact = async (request, env) => {
         "",
         "Message:",
         message,
+        "",
+        "Safe summary:",
+        `Name: ${safeName}`,
+        `Email: ${safeEmail}`,
+        `Company: ${safeCompany}`,
+        `Service: ${safeService}`,
+        "",
+        safeMessage,
       ].join("\n"),
-      html: `
-        <h2>New inquiry from sentry0.com</h2>
-        <p><strong>Name:</strong> ${safeName}</p>
-        <p><strong>Email:</strong> ${safeEmail}</p>
-        <p><strong>Company:</strong> ${safeCompany}</p>
-        <p><strong>Service:</strong> ${safeService}</p>
-        <p><strong>Message:</strong></p>
-        <p>${safeMessage.replace(/\n/g, "<br />")}</p>
-      `,
     });
 
     return json({ ok: true });

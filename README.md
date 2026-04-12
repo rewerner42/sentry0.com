@@ -5,7 +5,7 @@ Static marketing site for `sentry0.com` with:
 - Cloudflare Worker hosting with static assets
 - Cloudflare Turnstile protected contact form
 - Worker route handler in `worker.js`
-- Email delivery through Resend to `info@sentry0.com`
+- Email delivery through Cloudflare Email Service to `hello@sentry0.ai`
 
 ## Local development
 
@@ -26,17 +26,23 @@ This project serves static assets from `/public` and routes form submissions thr
 ## Required environment variables for Cloudflare
 
 - `TURNSTILE_SECRET_KEY`
-- `RESEND_API_KEY`
-- `CONTACT_TO_EMAIL`
-- `CONTACT_FROM_EMAIL`
 
-Recommended values:
+The Turnstile site key is already embedded in `public/index.html`.
 
-- `CONTACT_TO_EMAIL=info@sentry0.com`
-- `CONTACT_FROM_EMAIL=website@sentry0.com`
+## Cloudflare Email Service
 
-You also need to replace `YOUR_TURNSTILE_SITE_KEY` in `index.html` with your real public Turnstile site key.
+This Worker now uses a `send_email` binding named `SEND_EMAIL` and is configured to deliver contact form emails to `hello@sentry0.ai`.
+
+Before this works in production, make sure:
+
+1. Email Routing is enabled in Cloudflare for the domain.
+2. `hello@sentry0.ai` is configured correctly in your email setup.
+3. The Worker has the Email Service binding connected.
+
+## Important limitation
+
+Cloudflare Email Service is suitable for sending to addresses verified and allowed through your Cloudflare Email Routing setup. If you want to send automatic confirmation emails to arbitrary website visitors, you will usually still need a dedicated transactional email provider.
 
 ## Email delivery note
 
-Cloudflare Workers can verify Turnstile directly, but they do not send transactional email on their own. This project uses the Resend API from the Worker, which is a common and reliable setup for Cloudflare-hosted forms.
+Cloudflare Workers can verify Turnstile directly and can send email using Cloudflare Email Service. Cloudflare Email Routing is best suited for delivery to addresses configured and allowed in your Cloudflare email setup.
