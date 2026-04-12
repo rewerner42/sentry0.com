@@ -101,6 +101,10 @@ const handleContact = async (request, env) => {
       return json({ error: "Cloudflare Email Service is not configured." }, 500);
     }
 
+    // Cloudflare's send_email binding is intended for addresses verified through
+    // Email Routing. We therefore deliver the website inquiry to our mailbox here.
+    // Sending an automatic copy to an arbitrary website visitor is not reliable
+    // with this binding alone and typically requires a transactional email provider.
     const fromAddress = "hello@sentry0.ai";
     const recipientAddress = "hello@sentry0.ai";
     const subject = `[Sentry0] ${service} inquiry from ${name}`;

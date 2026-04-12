@@ -43,6 +43,8 @@ Before this works in production, make sure:
 
 Cloudflare Email Service is suitable for sending to addresses verified and allowed through your Cloudflare Email Routing setup. If you want to send automatic confirmation emails to arbitrary website visitors, you will usually still need a dedicated transactional email provider.
 
+That means the current setup reliably sends the inquiry to `hello@sentry0.ai`, but it should not be relied on to send a confirmation copy to any email address entered by a visitor on the form.
+
 ## Email delivery note
 
 Cloudflare Workers can verify Turnstile directly and can send email using Cloudflare Email Service. Cloudflare Email Routing is best suited for delivery to addresses configured and allowed in your Cloudflare email setup.
