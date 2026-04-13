@@ -1,5 +1,3 @@
-import { EmailMessage } from "cloudflare:email";
-
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -37,25 +35,41 @@ const verifyTurnstile = async (token, secret, ip) => {
   return response.json();
 };
 
-const buildRawEmail = ({ from, to, replyTo, subject, text }) =>
-  [
-    `From: Sentry0 <${from}>`,
-    `To: ${to}`,
-    `Subject: ${subject}`,
-    replyTo ? `Reply-To: ${replyTo}` : null,
-    "MIME-Version: 1.0",
-    'Content-Type: text/plain; charset="UTF-8"',
-    "Content-Transfer-Encoding: 8bit",
-    "",
-    text,
-  ]
-    .filter(Boolean)
-    .join("\r\n");
+const sendWithCloudflareEmailApi = async ({
+  accountId,
+  apiToken,
+  from,
+  to,
+  replyTo,
+  subject,
+  text,
+  html,
+}) => {
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/email/sending/send`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to,
+        subject,
+        reply_to: replyTo,
+        text,
+        html,
+      }),
+    }
+  );
 
-const sendWithCloudflareEmail = async ({ binding, from, to, replyTo, subject, text }) => {
-  const raw = buildRawEmail({ from, to, replyTo, subject, text });
-  const message = new EmailMessage(from, to, raw);
-  await binding.send(message);
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Cloudflare Email Sending API error: ${errorText}`);
+  }
+
+  return response.json();
 };
 
 const handleContact = async (request, env) => {
@@ -97,30 +111,20 @@ const handleContact = async (request, env) => {
       return json({ error: "Turnstile verification failed." }, 400);
     }
 
-    if (!env.SEND_EMAIL) {
-      return json({ error: "Cloudflare Email Service is not configured." }, 500);
+    if (!env.CF_ACCOUNT_ID || !env.CF_EMAIL_API_TOKEN) {
+      return json({ error: "Cloudflare Email Sending API is not configured." }, 500);
     }
 
-    // Cloudflare's send_email binding is intended for addresses verified through
-    // Email Routing. We therefore deliver the website inquiry to our mailbox here.
-    // Sending an automatic copy to an arbitrary website visitor is not reliable
-    // with this binding alone and typically requires a transactional email provider.
-    const fromAddress = "hello@sentry0.ai";
+    const fromAddress = env.CF_EMAIL_FROM || "hello@sentry0.ai";
     const recipientAddress = "hello@sentry0.ai";
-    const subject = `[Sentry0] ${service} inquiry from ${name}`;
+    const internalSubject = `[Sentry0] ${service} inquiry from ${name}`;
+    const confirmationSubject = `Copy of your inquiry to Sentry0`;
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeService = escapeHtml(service);
     const safeCompany = escapeHtml(company || "Not provided");
     const safeMessage = escapeHtml(message);
-
-    await sendWithCloudflareEmail({
-      binding: env.SEND_EMAIL,
-      from: fromAddress,
-      to: recipientAddress,
-      replyTo: email,
-      subject,
-      text: [
+    const internalText = [
         `Name: ${name}`,
         `Email: ${email}`,
         `Company: ${company || "Not provided"}`,
@@ -136,7 +140,63 @@ const handleContact = async (request, env) => {
         `Service: ${safeService}`,
         "",
         safeMessage,
-      ].join("\n"),
+      ].join("\n");
+    const internalHtml = `
+      <h2>New inquiry from sentry0.com</h2>
+      <p><strong>Name:</strong> ${safeName}</p>
+      <p><strong>Email:</strong> ${safeEmail}</p>
+      <p><strong>Company:</strong> ${safeCompany}</p>
+      <p><strong>Service:</strong> ${safeService}</p>
+      <p><strong>Message:</strong></p>
+      <p>${safeMessage.replace(/\n/g, "<br />")}</p>
+    `;
+    const confirmationText = [
+      `Hello ${name},`,
+      "",
+      "This is a copy of the inquiry you submitted to Sentry0.",
+      "",
+      `Service: ${service}`,
+      `Company: ${company || "Not provided"}`,
+      "",
+      "Your message:",
+      message,
+      "",
+      "We will get back to you as soon as possible.",
+      "",
+      "Sentry0",
+      "hello@sentry0.ai",
+    ].join("\n");
+    const confirmationHtml = `
+      <p>Hello ${safeName},</p>
+      <p>This is a copy of the inquiry you submitted to Sentry0.</p>
+      <p><strong>Service:</strong> ${safeService}</p>
+      <p><strong>Company:</strong> ${safeCompany}</p>
+      <p><strong>Your message:</strong></p>
+      <p>${safeMessage.replace(/\n/g, "<br />")}</p>
+      <p>We will get back to you as soon as possible.</p>
+      <p>Sentry0<br />hello@sentry0.ai</p>
+    `;
+
+    await sendWithCloudflareEmailApi({
+      accountId: env.CF_ACCOUNT_ID,
+      apiToken: env.CF_EMAIL_API_TOKEN,
+      from: { address: fromAddress, name: "Sentry0" },
+      to: [recipientAddress],
+      replyTo: email,
+      subject: internalSubject,
+      text: internalText,
+      html: internalHtml,
+    });
+
+    await sendWithCloudflareEmailApi({
+      accountId: env.CF_ACCOUNT_ID,
+      apiToken: env.CF_EMAIL_API_TOKEN,
+      from: { address: fromAddress, name: "Sentry0" },
+      to: [email],
+      replyTo: recipientAddress,
+      subject: confirmationSubject,
+      text: confirmationText,
+      html: confirmationHtml,
     });
 
     return json({ ok: true });
