@@ -35,38 +35,26 @@ const verifyTurnstile = async (token, secret, ip) => {
   return response.json();
 };
 
-const sendWithCloudflareEmailApi = async ({
-  accountId,
-  apiToken,
-  from,
-  to,
-  replyTo,
-  subject,
-  text,
-  html,
-}) => {
-  const response = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${accountId}/email/sending/send`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to,
-        subject,
-        reply_to: replyTo,
-        text,
-        html,
-      }),
-    }
-  );
+const sendWithResend = async ({ apiKey, from, to, replyTo, subject, text, html }) => {
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to,
+      reply_to: replyTo,
+      subject,
+      text,
+      html,
+    }),
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Cloudflare Email Sending API error: ${errorText}`);
+    throw new Error(`Resend API error: ${errorText}`);
   }
 
   return response.json();
@@ -111,11 +99,11 @@ const handleContact = async (request, env) => {
       return json({ error: "Turnstile verification failed." }, 400);
     }
 
-    if (!env.CF_ACCOUNT_ID || !env.CF_EMAIL_API_TOKEN) {
-      return json({ error: "Cloudflare Email Sending API is not configured." }, 500);
+    if (!env.RESEND_API_KEY) {
+      return json({ error: "Resend email delivery is not configured." }, 500);
     }
 
-    const fromAddress = env.CF_EMAIL_FROM || "hello@sentry0.ai";
+    const fromAddress = "hello@sentry0.ai";
     const recipientAddress = "hello@sentry0.ai";
     const internalSubject = `[Sentry0] ${service} inquiry from ${name}`;
     const confirmationSubject = `Copy of your inquiry to Sentry0`;
@@ -177,22 +165,20 @@ const handleContact = async (request, env) => {
       <p>Sentry0<br />hello@sentry0.ai</p>
     `;
 
-    await sendWithCloudflareEmailApi({
-      accountId: env.CF_ACCOUNT_ID,
-      apiToken: env.CF_EMAIL_API_TOKEN,
-      from: { address: fromAddress, name: "Sentry0" },
-      to: [recipientAddress],
+    await sendWithResend({
+      apiKey: env.RESEND_API_KEY,
+      from: `Sentry0 <${fromAddress}>`,
+      to: recipientAddress,
       replyTo: email,
       subject: internalSubject,
       text: internalText,
       html: internalHtml,
     });
 
-    await sendWithCloudflareEmailApi({
-      accountId: env.CF_ACCOUNT_ID,
-      apiToken: env.CF_EMAIL_API_TOKEN,
-      from: { address: fromAddress, name: "Sentry0" },
-      to: [email],
+    await sendWithResend({
+      apiKey: env.RESEND_API_KEY,
+      from: `Sentry0 <${fromAddress}>`,
+      to: email,
       replyTo: recipientAddress,
       subject: confirmationSubject,
       text: confirmationText,
