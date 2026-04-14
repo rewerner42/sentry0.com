@@ -56,6 +56,7 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 26px 0 18px;
+  gap: 24px;
 }
 
 .brand {
@@ -72,9 +73,8 @@ a {
 }
 
 .brand-logo {
-  width: 294px;
-  opacity: 0.92;
-  filter: brightness(0) invert(1);
+  width: 188px;
+  opacity: 1;
 }
 
 .hero-copy {
@@ -87,6 +87,8 @@ a {
   gap: 28px;
   align-items: center;
   flex-wrap: wrap;
+  margin-left: auto;
+  justify-content: flex-end;
 }
 
 .nav a {
@@ -96,6 +98,11 @@ a {
   text-transform: uppercase;
 }
 
+.nav-contact {
+  color: #ffffff;
+  text-shadow: 0 0 22px rgba(255, 255, 255, 0.12);
+}
+
 .nav-cta {
   min-height: 44px;
   padding: 0 18px;
@@ -103,6 +110,8 @@ a {
   font-size: 0.88rem;
   letter-spacing: 0;
   text-transform: none;
+  color: #090909;
+  white-space: nowrap;
 }
 
 .nav a:hover,
@@ -110,6 +119,11 @@ a {
 .service-tab:hover,
 .service-tab:focus-visible {
   color: #ffffff;
+}
+
+.nav-cta:hover,
+.nav-cta:focus-visible {
+  color: #090909;
 }
 
 .section {
@@ -536,7 +550,7 @@ textarea:focus-visible {
   }
 
   .brand-logo {
-    width: 232px;
+    width: 164px;
   }
 }
 
@@ -561,7 +575,7 @@ textarea:focus-visible {
   }
 
   .brand-logo {
-    width: 196px;
+    width: 152px;
   }
 
   .metrics,
