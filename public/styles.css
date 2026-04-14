@@ -73,7 +73,7 @@ a {
 }
 
 .brand-logo {
-  width: 188px;
+  width: 182px;
   opacity: 1;
 }
 
@@ -103,7 +103,7 @@ a {
   text-shadow: 0 0 22px rgba(255, 255, 255, 0.12);
 }
 
-.nav-cta {
+.nav a.nav-cta {
   min-height: 44px;
   padding: 0 18px;
   margin-left: 8px;
@@ -121,8 +121,8 @@ a {
   color: #ffffff;
 }
 
-.nav-cta:hover,
-.nav-cta:focus-visible {
+.nav a.nav-cta:hover,
+.nav a.nav-cta:focus-visible {
   color: #090909;
 }
 
@@ -550,7 +550,7 @@ textarea:focus-visible {
   }
 
   .brand-logo {
-    width: 164px;
+    width: 170px;
   }
 }
 
@@ -575,7 +575,7 @@ textarea:focus-visible {
   }
 
   .brand-logo {
-    width: 152px;
+    width: 160px;
   }
 
   .metrics,

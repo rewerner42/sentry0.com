@@ -1,18 +1,11 @@
-<svg
-  width="680"
-  height="280"
-  viewBox="0 0 680 280"
-  role="img"
-  xmlns="http://www.w3.org/2000/svg"
->
+<svg viewBox="0 0 360 122" role="img" xmlns="http://www.w3.org/2000/svg">
   <title>SentryØ Logo</title>
   <desc>Clean SentryØ logo with shield icon and Apple-style typography</desc>
-  <rect width="680" height="280" fill="none" />
-  <g transform="translate(340, 30)">
+  <g transform="translate(180, 8)">
     <path
       d="M0 0 C0 0 -44 15 -44 18 L-44 64 C-44 90 -22 112 0 120 C22 112 44 90 44 64 L44 18 C44 15 0 0 0 0 Z"
       fill="none"
-      stroke="#1d1d1f"
+      stroke="#f3f3f1"
       stroke-width="2.2"
       stroke-linejoin="round"
       stroke-linecap="round"
@@ -22,16 +15,16 @@
       cy="65"
       r="16"
       fill="none"
-      stroke="#1d1d1f"
+      stroke="#f3f3f1"
       stroke-width="2"
     />
-    <circle cx="0" cy="65" r="4" fill="#1d1d1f" />
+    <circle cx="0" cy="65" r="4" fill="#f3f3f1" />
     <line
       x1="0"
       y1="44"
       x2="0"
       y2="53"
-      stroke="#1d1d1f"
+      stroke="#f3f3f1"
       stroke-width="2"
       stroke-linecap="round"
     />
@@ -40,7 +33,7 @@
       y1="77"
       x2="0"
       y2="86"
-      stroke="#1d1d1f"
+      stroke="#f3f3f1"
       stroke-width="2"
       stroke-linecap="round"
     />
@@ -49,7 +42,7 @@
       y1="65"
       x2="-12"
       y2="65"
-      stroke="#1d1d1f"
+      stroke="#f3f3f1"
       stroke-width="2"
       stroke-linecap="round"
     />
@@ -58,20 +51,20 @@
       y1="65"
       x2="21"
       y2="65"
-      stroke="#1d1d1f"
+      stroke="#f3f3f1"
       stroke-width="2"
       stroke-linecap="round"
     />
   </g>
   <text
-    x="340"
-    y="230"
+    x="180"
+    y="114"
     text-anchor="middle"
-    font-size="72"
-    font-weight="200"
+    font-size="60"
+    font-weight="300"
     letter-spacing="-0.5"
     font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif"
-    fill="#1d1d1f"
+    fill="#f3f3f1"
   >
     SentryØ
   </text>
