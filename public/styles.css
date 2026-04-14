@@ -96,10 +96,19 @@ a {
   text-transform: uppercase;
 }
 
+.nav-cta {
+  min-height: 44px;
+  padding: 0 18px;
+  margin-left: 8px;
+  font-size: 0.88rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .nav a:hover,
 .nav a:focus-visible,
-.service-nav a:hover,
-.service-nav a:focus-visible {
+.service-tab:hover,
+.service-tab:focus-visible {
   color: #ffffff;
 }
 
@@ -121,8 +130,9 @@ a {
 }
 
 .services,
-.service-extensions,
+.approach,
 .team,
+.clients,
 .contact {
   padding-top: 36px;
 }
@@ -169,10 +179,8 @@ h3 {
 
 .hero-text,
 .section-heading p,
-.service-group-head p,
 .service-card p,
 .timeline-card p,
-.audience-copy + div,
 .contact p,
 .footer p,
 label span,
@@ -228,8 +236,7 @@ textarea,
 .service-card,
 .timeline-card,
 .contact-form,
-.metrics,
-.audience {
+.metrics {
   background: linear-gradient(180deg, rgba(18, 18, 20, 0.96), rgba(10, 10, 11, 0.96));
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
@@ -295,27 +302,45 @@ textarea,
   gap: 20px;
 }
 
-.service-nav {
+.service-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 30px;
 }
 
-.service-nav a {
-  padding: 12px 16px;
+.service-tab {
+  appearance: none;
   border: 1px solid var(--line);
   border-radius: 999px;
-  color: var(--text);
   background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  padding: 12px 16px;
+  font: inherit;
+  cursor: pointer;
 }
 
-.service-group {
-  margin-bottom: 36px;
+.service-tab.is-active {
+  background: linear-gradient(135deg, #ffffff 0%, #d3d3d5 100%);
+  color: #090909;
 }
 
-.service-group-head {
-  margin-bottom: 22px;
+.service-panels {
+  position: relative;
+}
+
+.service-panel[hidden] {
+  display: none;
+}
+
+.service-panel.is-active {
+  display: block;
+}
+
+.approach-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
 }
 
 .service-card,
@@ -339,13 +364,6 @@ textarea,
   font-size: 0.84rem;
 }
 
-.audience {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-  padding: 34px;
-}
-
 .audience-tags {
   display: flex;
   flex-wrap: wrap;
@@ -359,6 +377,55 @@ textarea,
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text);
+}
+
+.team-panel,
+.client-group,
+.client-note {
+  background: linear-gradient(180deg, rgba(18, 18, 20, 0.96), rgba(10, 10, 11, 0.96));
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+}
+
+.team-panel {
+  padding: 34px;
+}
+
+.team-panel p,
+.client-group-copy,
+.client-note p {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.client-groups {
+  display: grid;
+  gap: 20px;
+}
+
+.client-group {
+  padding: 28px;
+}
+
+.client-group-title {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  margin-bottom: 10px;
+}
+
+.client-group-copy {
+  margin-bottom: 18px;
+}
+
+.client-note {
+  margin-top: 20px;
+  padding: 22px 28px;
 }
 
 .contact-form {
@@ -450,9 +517,12 @@ textarea:focus-visible {
   .hero,
   .service-grid,
   .timeline,
-  .audience,
   .field-row {
     grid-template-columns: 1fr;
+  }
+
+  .approach-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .metrics,
@@ -486,6 +556,10 @@ textarea:focus-visible {
     flex-wrap: wrap;
   }
 
+  .nav-cta {
+    margin-left: 0;
+  }
+
   .brand-logo {
     width: 196px;
   }
@@ -508,7 +582,9 @@ textarea:focus-visible {
   .hero-panel,
   .service-card,
   .timeline-card,
-  .audience {
+  .team-panel,
+  .client-group,
+  .client-note {
     padding: 22px;
   }
 

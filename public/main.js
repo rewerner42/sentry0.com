@@ -3,6 +3,8 @@ const statusNode = document.querySelector("#form-status");
 const revealNodes = document.querySelectorAll(".reveal");
 const navLinks = document.querySelectorAll(".nav a[href^='#']");
 const topbarShell = document.querySelector(".topbar-shell");
+const serviceTabs = document.querySelectorAll(".service-tab");
+const servicePanels = document.querySelectorAll(".service-panel");
 
 const setStatus = (message, type = "") => {
   if (!statusNode) return;
@@ -27,6 +29,26 @@ const revealObserver = new IntersectionObserver(
 
 for (const node of revealNodes) {
   revealObserver.observe(node);
+}
+
+const setActiveServiceTab = (targetId) => {
+  for (const tab of serviceTabs) {
+    const isActive = tab.dataset.tabTarget === targetId;
+    tab.classList.toggle("is-active", isActive);
+    tab.setAttribute("aria-selected", isActive ? "true" : "false");
+  }
+
+  for (const panel of servicePanels) {
+    const isActive = panel.id === targetId;
+    panel.classList.toggle("is-active", isActive);
+    panel.hidden = !isActive;
+  }
+};
+
+for (const tab of serviceTabs) {
+  tab.addEventListener("click", () => {
+    setActiveServiceTab(tab.dataset.tabTarget);
+  });
 }
 
 const getHeaderOffset = () => {
