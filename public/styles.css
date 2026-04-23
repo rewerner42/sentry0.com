@@ -116,8 +116,8 @@ img {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  padding: 8px 12px;
-  border-radius: 999px;
+  padding: 10px 16px 9px;
+  border-radius: 28px;
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, calc(0.04 + (var(--header-progress) * 0.02))),
@@ -136,15 +136,15 @@ img {
 .brand::before {
   content: "";
   position: absolute;
-  inset: 0 auto auto 12px;
-  width: 42px;
+  inset: 0 auto auto 16px;
+  width: 54px;
   height: 1px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.42), transparent);
 }
 
 .brand-logo {
   display: block;
-  width: clamp(172px, 15vw, 208px);
+  width: clamp(114px, 9.4vw, 132px);
   height: auto;
   object-fit: contain;
   transform-origin: left center;
@@ -1196,7 +1196,7 @@ textarea::placeholder {
   }
 
   .brand-logo {
-    width: min(46vw, 182px);
+    width: min(34vw, 126px);
   }
 
   .nav a {
@@ -1208,7 +1208,7 @@ textarea::placeholder {
   }
 
   .brand {
-    padding: 8px 10px;
+    padding: 8px 12px 7px;
   }
 
   .nav {
