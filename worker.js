@@ -19,6 +19,19 @@ const escapeHtml = (value) =>
     return entities[char] || char;
   });
 
+const normalizeField = (value, maxLength = 5000) => String(value || "").trim().slice(0, maxLength);
+
+const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+const allowedServices = new Set([
+  "AI Security Assessment",
+  "Penetration Testing & Red Team Operations",
+  "Virtual CISO",
+  "Compliance & Regulatory Readiness",
+  "Managed Detection & Response",
+  "Other",
+]);
+
 const verifyTurnstile = async (token, secret, ip) => {
   const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
     method: "POST",
@@ -54,7 +67,8 @@ const sendWithResend = async ({ apiKey, from, to, replyTo, subject, text, html }
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Resend API error: ${errorText}`);
+    console.error("Resend API error:", errorText);
+    throw new Error("Email delivery request failed.");
   }
 
   return response.json();
@@ -68,17 +82,23 @@ const handleContact = async (request, env) => {
     }
 
     const payload = await request.json();
-    const {
-      name = "",
-      email = "",
-      company = "",
-      service = "",
-      message = "",
-      ["cf-turnstile-response"]: turnstileToken = "",
-    } = payload;
+    const name = normalizeField(payload.name, 120);
+    const email = normalizeField(payload.email, 254);
+    const company = normalizeField(payload.company, 160);
+    const service = normalizeField(payload.service, 120);
+    const message = normalizeField(payload.message, 6000);
+    const turnstileToken = normalizeField(payload["cf-turnstile-response"], 2048);
 
     if (!name || !email || !service || !message) {
       return json({ error: "Please complete all required fields." }, 400);
+    }
+
+    if (!isValidEmail(email)) {
+      return json({ error: "Please enter a valid email address." }, 400);
+    }
+
+    if (!allowedServices.has(service)) {
+      return json({ error: "Please choose a valid service option." }, 400);
     }
 
     if (!turnstileToken) {
@@ -175,19 +195,24 @@ const handleContact = async (request, env) => {
       html: internalHtml,
     });
 
-    await sendWithResend({
-      apiKey: env.RESEND_API_KEY,
-      from: `Sentry0 <${fromAddress}>`,
-      to: email,
-      replyTo: recipientAddress,
-      subject: confirmationSubject,
-      text: confirmationText,
-      html: confirmationHtml,
-    });
+    try {
+      await sendWithResend({
+        apiKey: env.RESEND_API_KEY,
+        from: `Sentry0 <${fromAddress}>`,
+        to: email,
+        replyTo: recipientAddress,
+        subject: confirmationSubject,
+        text: confirmationText,
+        html: confirmationHtml,
+      });
+    } catch (error) {
+      console.error("Confirmation email failed:", error);
+    }
 
     return json({ ok: true });
   } catch (error) {
-    return json({ error: error.message || "Unexpected server error." }, 500);
+    console.error("Contact handler failed:", error);
+    return json({ error: "Unable to send your inquiry right now. Please try again shortly." }, 500);
   }
 };
 

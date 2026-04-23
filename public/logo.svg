@@ -1,71 +1,37 @@
-<svg viewBox="0 0 360 122" role="img" xmlns="http://www.w3.org/2000/svg">
-  <title>SentryØ Logo</title>
-  <desc>Clean SentryØ logo with shield icon and Apple-style typography</desc>
-  <g transform="translate(180, 8)">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 312 72"
+  role="img"
+  preserveAspectRatio="xMinYMid meet"
+>
+  <title>Sentry0 logo</title>
+  <desc>Horizontal Sentry0 lockup with a guarded zero symbol and compact premium wordmark.</desc>
+  <g fill="#f3f3f1">
+    <path d="M0 18L8 10H16V62H8L0 54Z" />
     <path
-      d="M0 0 C0 0 -44 15 -44 18 L-44 64 C-44 90 -22 112 0 120 C22 112 44 90 44 64 L44 18 C44 15 0 0 0 0 Z"
-      fill="none"
-      stroke="#f3f3f1"
-      stroke-width="2.2"
-      stroke-linejoin="round"
-      stroke-linecap="round"
+      fill-rule="evenodd"
+      d="M24 18L34 8H48L58 18V54L48 64H34L24 54Z M34 27L39 22H43L48 27V45L43 50H39L34 45Z"
     />
-    <circle
-      cx="0"
-      cy="65"
-      r="16"
-      fill="none"
-      stroke="#f3f3f1"
-      stroke-width="2"
-    />
-    <circle cx="0" cy="65" r="4" fill="#f3f3f1" />
-    <line
-      x1="0"
-      y1="44"
-      x2="0"
-      y2="53"
-      stroke="#f3f3f1"
-      stroke-width="2"
-      stroke-linecap="round"
-    />
-    <line
-      x1="0"
-      y1="77"
-      x2="0"
-      y2="86"
-      stroke="#f3f3f1"
-      stroke-width="2"
-      stroke-linecap="round"
-    />
-    <line
-      x1="-21"
-      y1="65"
-      x2="-12"
-      y2="65"
-      stroke="#f3f3f1"
-      stroke-width="2"
-      stroke-linecap="round"
-    />
-    <line
-      x1="12"
-      y1="65"
-      x2="21"
-      y2="65"
-      stroke="#f3f3f1"
-      stroke-width="2"
-      stroke-linecap="round"
-    />
+    <path d="M40 18H47L33 54H26Z" />
   </g>
   <text
-    x="180"
-    y="114"
-    text-anchor="middle"
-    font-size="60"
-    font-weight="300"
-    letter-spacing="-0.5"
-    font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+    x="82"
+    y="50"
     fill="#f3f3f1"
+    font-family="'Avenir Next', 'Segoe UI', Arial, sans-serif"
+    font-size="34"
+    font-weight="600"
+    letter-spacing="3.4"
+    textLength="168"
+    lengthAdjust="spacingAndGlyphs"
   >
-    SentryØ
+    SENTRY
   </text>
+  <g transform="translate(262 16)" fill="#f3f3f1">
+    <path
+      fill-rule="evenodd"
+      d="M0 10L8 2H24L32 10V38L24 46H8L0 38Z M10 18L14 14H18L22 18V30L18 34H14L10 30Z"
+    />
+    <path d="M18 0H25L11 46H4Z" />
+  </g>
 </svg>
