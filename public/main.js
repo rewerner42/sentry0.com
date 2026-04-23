@@ -3,23 +3,35 @@ const statusNode = document.querySelector("#form-status");
 const submitButton = form?.querySelector("button[type='submit']");
 const revealNodes = Array.from(document.querySelectorAll(".reveal"));
 const navLinks = Array.from(document.querySelectorAll(".nav a[href^='#']"));
+const navLocationLinks = navLinks.filter((link) => !link.classList.contains("nav-cta"));
 const scrollLinks = Array.from(document.querySelectorAll("a[href^='#']:not([href='#'])"));
 const brandLink = document.querySelector(".brand[href^='#']");
 const topbarShell = document.querySelector(".topbar-shell");
+const teamSection = document.querySelector(".team");
 const root = document.documentElement;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const trackedNavLinks = [brandLink, ...navLocationLinks].filter(Boolean);
+const HEADER_PROGRESS_RANGE = 84;
+const HEADER_SCROLLED_Y = 12;
 
 const linkedTargets = Array.from(
-  new Set(
-    [brandLink, ...navLinks]
-      .map((link) => getTargetFromHash(link?.getAttribute("href")))
+  new Map(
+    trackedNavLinks
+      .map((link) => {
+        const hash = link.getAttribute("href");
+        const target = getTargetFromHash(hash);
+        return hash && target ? [hash, { hash, target }] : null;
+      })
       .filter(Boolean)
-  )
+  ).values()
 );
 
 let revealObserver;
+let teamObserver;
 let scrollTicking = false;
 let focusTimeoutId = 0;
+let pendingTrackedHash = "";
+let pendingTrackedTop = 0;
 
 function getTargetFromHash(hash) {
   if (!hash || hash === "#") return null;
@@ -42,6 +54,10 @@ function setStatus(message, type = "") {
   }
 }
 
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
 function getHeaderOffset() {
   const headerHeight = topbarShell ? topbarShell.getBoundingClientRect().height : 0;
   return Math.ceil(headerHeight + 18);
@@ -49,6 +65,91 @@ function getHeaderOffset() {
 
 function syncHeaderOffset() {
   root.style.setProperty("--header-offset", `${getHeaderOffset()}px`);
+}
+
+function getDocumentTop(node) {
+  let top = 0;
+  let currentNode = node;
+
+  while (currentNode) {
+    top += currentNode.offsetTop;
+    currentNode = currentNode.offsetParent;
+  }
+
+  return top;
+}
+
+function getScrollAnchor(target) {
+  if (target.matches("main")) {
+    return target;
+  }
+
+  return target.querySelector("[data-scroll-anchor], h1, h2, h3") || target;
+}
+
+function getMaxScrollTop() {
+  return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+}
+
+function withTemporaryHeaderState(scrolled, measure) {
+  if (!topbarShell) {
+    return measure();
+  }
+
+  const nextState = scrolled ? "true" : "false";
+  const previousState = topbarShell.dataset.scrolled;
+  const previousProgress = topbarShell.style.getPropertyValue("--header-progress");
+  const nextProgress = scrolled ? "1" : "0";
+
+  if (previousState === nextState && previousProgress === nextProgress) {
+    return measure();
+  }
+
+  topbarShell.dataset.scrolled = nextState;
+  topbarShell.style.setProperty("--header-progress", nextProgress);
+
+  try {
+    return measure();
+  } finally {
+    if (previousProgress) {
+      topbarShell.style.setProperty("--header-progress", previousProgress);
+    } else {
+      topbarShell.style.removeProperty("--header-progress");
+    }
+
+    if (previousState) {
+      topbarShell.dataset.scrolled = previousState;
+    } else {
+      delete topbarShell.dataset.scrolled;
+    }
+  }
+}
+
+function getTargetScrollTop(target) {
+  const anchor = getScrollAnchor(target);
+  const measureScrollTop = (scrolled) =>
+    withTemporaryHeaderState(scrolled, () =>
+      clamp(getDocumentTop(anchor) - getHeaderOffset(), 0, getMaxScrollTop())
+    );
+
+  const scrolledTop = measureScrollTop(true);
+  return scrolledTop > HEADER_SCROLLED_Y ? scrolledTop : measureScrollTop(false);
+}
+
+function setCurrentNav(hash) {
+  for (const link of trackedNavLinks) {
+    if (link.getAttribute("href") === hash) {
+      link.setAttribute("aria-current", "location");
+      continue;
+    }
+
+    link.removeAttribute("aria-current");
+  }
+}
+
+function clearPendingTrackedNav() {
+  pendingTrackedHash = "";
+  pendingTrackedTop = 0;
 }
 
 function getFocusTarget(target) {
@@ -83,29 +184,41 @@ function focusTarget(target) {
 function updateCurrentNav() {
   if (!linkedTargets.length) return;
 
-  const offset = getHeaderOffset() + 28;
-  let currentHash = `#${linkedTargets[0].id}`;
+  if (pendingTrackedHash) {
+    if (Math.round(window.scrollY) !== Math.round(pendingTrackedTop)) {
+      setCurrentNav(pendingTrackedHash);
+      return;
+    }
 
-  for (const target of linkedTargets) {
-    if (target.getBoundingClientRect().top <= offset) {
-      currentHash = `#${target.id}`;
+    clearPendingTrackedNav();
+  }
+
+  if (Math.ceil(window.scrollY) >= Math.floor(getMaxScrollTop())) {
+    setCurrentNav(linkedTargets[linkedTargets.length - 1].hash);
+    return;
+  }
+
+  const probe = Math.ceil(window.scrollY + getHeaderOffset());
+  let currentHash = linkedTargets[0].hash;
+
+  for (const { hash, target } of linkedTargets) {
+    const anchorTop = Math.floor(getDocumentTop(getScrollAnchor(target)));
+
+    if (probe >= anchorTop) {
+      currentHash = hash;
     }
   }
 
-  for (const link of [brandLink, ...navLinks].filter(Boolean)) {
-    if (link.getAttribute("href") === currentHash) {
-      link.setAttribute("aria-current", "location");
-      continue;
-    }
-
-    link.removeAttribute("aria-current");
-  }
+  setCurrentNav(currentHash);
 }
 
 function updateHeaderState() {
   if (!topbarShell) return;
 
-  topbarShell.dataset.scrolled = window.scrollY > 12 ? "true" : "false";
+  const progress = clamp(window.scrollY / HEADER_PROGRESS_RANGE, 0, 1);
+  topbarShell.dataset.scrolled =
+    progress > HEADER_SCROLLED_Y / HEADER_PROGRESS_RANGE ? "true" : "false";
+  topbarShell.style.setProperty("--header-progress", progress.toFixed(3));
 }
 
 function requestPageStateUpdate() {
@@ -130,16 +243,43 @@ function scrollToHash(hash, { updateHistory = false, focus = true, behavior } = 
     window.history.pushState(null, "", hash);
   }
 
-  target.scrollIntoView({
-    block: "start",
-    behavior: behavior || (prefersReducedMotion.matches ? "auto" : "smooth"),
+  const finalBehavior = behavior || (prefersReducedMotion.matches ? "auto" : "smooth");
+  const nextTop = getTargetScrollTop(target);
+
+  if (linkedTargets.some((entry) => entry.hash === hash)) {
+    pendingTrackedHash = hash;
+    pendingTrackedTop = nextTop;
+    setCurrentNav(hash);
+  } else {
+    clearPendingTrackedNav();
+  }
+
+  window.scrollTo({
+    top: nextTop,
+    behavior: finalBehavior,
   });
 
   if (focus) {
     focusTarget(target);
   }
 
-  updateCurrentNav();
+  if (Math.round(window.scrollY) === Math.round(nextTop) || finalBehavior === "auto") {
+    clearPendingTrackedNav();
+    requestPageStateUpdate();
+  }
+}
+
+function handleManualScrollIntent(event) {
+  if (!pendingTrackedHash) return;
+
+  if (
+    event.type === "keydown" &&
+    ![" ", "ArrowDown", "ArrowUp", "End", "Home", "PageDown", "PageUp"].includes(event.key)
+  ) {
+    return;
+  }
+
+  clearPendingTrackedNav();
 }
 
 function initRevealObserver() {
@@ -178,6 +318,34 @@ function initRevealObserver() {
     if (node.classList.contains("is-visible")) continue;
     revealObserver.observe(node);
   }
+}
+
+function initTeamObserver() {
+  if (teamObserver) {
+    teamObserver.disconnect();
+    teamObserver = null;
+  }
+
+  if (!teamSection) return;
+
+  if (prefersReducedMotion.matches || !("IntersectionObserver" in window)) {
+    teamSection.dataset.inview = "true";
+    return;
+  }
+
+  teamSection.dataset.inview = "false";
+  teamObserver = new IntersectionObserver(
+    (entries) => {
+      const [entry] = entries;
+      teamSection.dataset.inview = entry?.isIntersecting ? "true" : "false";
+    },
+    {
+      threshold: 0.35,
+      rootMargin: "0px 0px -18% 0px",
+    }
+  );
+
+  teamObserver.observe(teamSection);
 }
 
 function handleHashLinkClick(event) {
@@ -278,6 +446,9 @@ if (form) {
 }
 
 window.addEventListener("scroll", requestPageStateUpdate, { passive: true });
+window.addEventListener("wheel", handleManualScrollIntent, { passive: true });
+window.addEventListener("touchstart", handleManualScrollIntent, { passive: true });
+window.addEventListener("keydown", handleManualScrollIntent);
 window.addEventListener("resize", requestPageStateUpdate);
 window.addEventListener("hashchange", () => {
   if (!window.location.hash) return;
@@ -291,6 +462,7 @@ window.addEventListener("hashchange", () => {
 
 const motionChangeHandler = () => {
   initRevealObserver();
+  initTeamObserver();
   requestPageStateUpdate();
 };
 
@@ -301,7 +473,9 @@ if (typeof prefersReducedMotion.addEventListener === "function") {
 }
 
 initRevealObserver();
+initTeamObserver();
 requestPageStateUpdate();
+window.clearTimeout(window.__revealFallbackTimer);
 
 if (window.location.hash) {
   window.requestAnimationFrame(() => {

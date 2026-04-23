@@ -28,7 +28,6 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: var(--header-offset);
 }
 
 body {
@@ -78,71 +77,79 @@ img {
 }
 
 .topbar-shell {
+  --header-progress: 0;
   position: sticky;
   top: 0;
   z-index: 40;
   width: 100%;
   backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(9, 9, 10, 0.96), rgba(9, 9, 10, 0.88));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 9, 10, calc(0.96 + (var(--header-progress) * 0.03))),
+    rgba(9, 9, 10, calc(0.88 + (var(--header-progress) * 0.06)))
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, calc(0.04 + (var(--header-progress) * 0.04)));
+  box-shadow: 0 calc(6px + (var(--header-progress) * 8px)) calc(18px + (var(--header-progress) * 10px))
+    rgba(0, 0, 0, calc(0.08 + (var(--header-progress) * 0.12)));
   transition:
-    background 180ms ease,
-    border-color 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.topbar-shell[data-scrolled="true"] {
-  background: linear-gradient(180deg, rgba(9, 9, 10, 0.99), rgba(9, 9, 10, 0.94));
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+    background 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 36px;
-  padding: 24px 0 18px;
-  transition: padding 180ms ease;
-}
-
-.topbar-shell[data-scrolled="true"] .topbar {
-  padding: 19px 0 14px;
+  gap: calc(36px - (var(--header-progress) * 6px));
+  padding:
+    calc(24px - (var(--header-progress) * 5px))
+    0
+    calc(18px - (var(--header-progress) * 4px));
+  transition:
+    gap 220ms ease,
+    padding 220ms ease;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
-  max-width: min(36vw, 246px);
-  padding: 12px 16px;
+  padding: 8px 12px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, calc(0.04 + (var(--header-progress) * 0.02))),
+    rgba(255, 255, 255, calc(0.015 + (var(--header-progress) * 0.015)))
+  );
+  border: 1px solid rgba(255, 255, 255, calc(0.08 + (var(--header-progress) * 0.04)));
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .brand::before {
   content: "";
   position: absolute;
-  inset: 0 auto auto 16px;
-  width: 54px;
+  inset: 0 auto auto 12px;
+  width: 42px;
   height: 1px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.42), transparent);
 }
 
 .brand-logo {
   display: block;
-  width: clamp(180px, 18vw, 228px);
+  width: clamp(172px, 15vw, 208px);
   height: auto;
+  object-fit: contain;
   transform-origin: left center;
-  transition: transform 180ms ease;
-}
-
-.topbar-shell[data-scrolled="true"] .brand-logo {
-  transform: scale(0.965);
+  transform: scale(calc(1 - (var(--header-progress) * 0.035)));
+  transition: transform 220ms ease;
 }
 
 .nav {
@@ -154,9 +161,17 @@ img {
   margin-left: auto;
   padding: 12px 14px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, calc(0.035 + (var(--header-progress) * 0.02))),
+    rgba(255, 255, 255, calc(0.02 + (var(--header-progress) * 0.015)))
+  );
+  border: 1px solid rgba(255, 255, 255, calc(0.08 + (var(--header-progress) * 0.04)));
   box-shadow: var(--shadow-md);
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .nav a {
@@ -165,12 +180,20 @@ img {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition:
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.nav a:not(.nav-cta):not([aria-current="location"]) {
+  opacity: 0.82;
 }
 
 .nav a:hover,
 .nav a:focus-visible,
 .nav a[aria-current="location"] {
   color: var(--text);
+  opacity: 1;
 }
 
 .nav a[aria-current="location"]:not(.nav-cta) {
@@ -463,6 +486,61 @@ textarea,
   padding: 30px;
 }
 
+.team-panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    background 240ms ease;
+}
+
+.team-panel::before,
+.team-panel::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  transition:
+    opacity 420ms ease,
+    transform 560ms ease;
+}
+
+.team-panel::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 46%),
+    linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.08) 48%, transparent 100%);
+  opacity: 0;
+  transform: translate3d(-4%, 0, 0);
+}
+
+.team-panel::after {
+  inset: 0 auto auto 0;
+  width: min(38%, 220px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.34), transparent);
+  opacity: 0.44;
+  transform: scaleX(0.84);
+  transform-origin: left center;
+}
+
+.team[data-inview="true"] .team-panel {
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, rgba(24, 24, 28, 0.98), rgba(12, 12, 14, 0.98));
+  box-shadow: 0 28px 84px rgba(0, 0, 0, 0.4);
+}
+
+.team[data-inview="true"] .team-panel::before {
+  opacity: 0.7;
+  transform: translate3d(0, 0, 0);
+}
+
+.team[data-inview="true"] .team-panel::after {
+  opacity: 0.96;
+  transform: scaleX(1);
+}
+
 .client-groups {
   display: grid;
   gap: 20px;
@@ -477,6 +555,372 @@ textarea,
 
 .client-group-copy {
   margin-bottom: 18px;
+}
+
+.team {
+  position: relative;
+  isolation: isolate;
+}
+
+.team::before,
+.team::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.team::before {
+  inset: 74px -6% 52px;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(128, 162, 194, 0.16), transparent 24%),
+    radial-gradient(circle at 86% 14%, rgba(255, 255, 255, 0.06), transparent 20%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 32%, transparent 72%, rgba(255, 255, 255, 0.02));
+  opacity: 0.92;
+}
+
+.team::after {
+  inset: 146px 7% 96px;
+  z-index: -1;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 58px, rgba(255, 255, 255, 0.028) 58px 59px),
+    repeating-linear-gradient(180deg, transparent 0 58px, rgba(255, 255, 255, 0.028) 58px 59px);
+  mask-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.4) 16%, rgba(0, 0, 0, 0.18) 84%, transparent);
+  opacity: 0.44;
+}
+
+.team .section-heading {
+  max-width: 760px;
+}
+
+.team-panel-intro,
+.team-role,
+.team-panel-summary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.team-panel-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.14fr) minmax(300px, 0.86fr);
+  gap: clamp(20px, 3vw, 34px);
+  align-items: stretch;
+  padding: clamp(28px, 3vw, 36px);
+  background:
+    radial-gradient(circle at 86% 18%, rgba(145, 178, 212, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(18, 20, 24, 0.98), rgba(8, 9, 11, 0.99));
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.team-panel-intro::before,
+.team-panel-intro::after,
+.team-role-grid::before,
+.team-role-grid::after,
+.team-role::before,
+.team-role::after,
+.team-panel-summary::before,
+.team-panel-summary::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.team-panel-intro::before {
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 44px),
+    linear-gradient(rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 44px);
+  background-size: 44px 100%, 100% 44px;
+  mask-image: linear-gradient(135deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.94) 42%, transparent);
+  opacity: 0.28;
+}
+
+.team-panel-intro::after {
+  inset: auto -12% 22px 36%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+  opacity: 0.66;
+  animation: team-scan 7s ease-in-out infinite;
+}
+
+.team-panel-intro p,
+.team-role .client-group-title,
+.team-role h3,
+.team-role .client-group-copy,
+.team-role .audience-tags,
+.team-panel-summary p {
+  position: relative;
+  z-index: 1;
+}
+
+.team-panel-intro p {
+  margin-bottom: 0;
+}
+
+.team-panel-intro p:first-child {
+  max-width: 32ch;
+  font-size: clamp(1.16rem, 1.9vw, 1.34rem);
+  line-height: 1.82;
+  color: var(--muted-strong);
+}
+
+.team-panel-intro p:last-child {
+  align-self: end;
+  padding: 78px 24px 24px;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)),
+    linear-gradient(180deg, rgba(11, 12, 14, 0.9), rgba(8, 9, 11, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.team-panel-intro p:last-child::before {
+  content: "";
+  position: absolute;
+  inset: 18px 20px auto;
+  height: 42px;
+  border-radius: 14px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 22px),
+    linear-gradient(rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 22px),
+    linear-gradient(125deg, transparent 18%, rgba(255, 255, 255, 0.18) 44%, transparent 64%),
+    radial-gradient(circle at 74% 32%, rgba(255, 255, 255, 0.65) 0 2px, transparent 2.8px);
+  background-size: 22px 100%, 100% 22px, 100% 100%, 100% 100%;
+  opacity: 0.78;
+}
+
+.team-proof-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.team-proof-card {
+  display: grid;
+  gap: 10px;
+  padding: 20px 22px;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018)),
+    linear-gradient(180deg, rgba(14, 15, 18, 0.96), rgba(9, 10, 12, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-md);
+}
+
+.team-proof-card span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+}
+
+.team-proof-card strong {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.team-role-grid {
+  position: relative;
+  isolation: isolate;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.08fr) minmax(0, 0.96fr);
+  gap: clamp(18px, 2vw, 24px);
+  margin-top: 34px;
+  align-items: start;
+}
+
+.team-role-grid::before {
+  inset: 92px 8% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.12), transparent);
+  opacity: 0.75;
+  z-index: 0;
+}
+
+.team-role-grid::after {
+  inset: 44px 10% auto;
+  height: 96px;
+  background:
+    radial-gradient(circle at 16% 52%, rgba(255, 255, 255, 0.28) 0 2px, transparent 3px),
+    radial-gradient(circle at 50% 52%, rgba(255, 255, 255, 0.34) 0 2px, transparent 3px),
+    radial-gradient(circle at 84% 52%, rgba(255, 255, 255, 0.28) 0 2px, transparent 3px);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+.team-role {
+  --team-accent: rgba(255, 255, 255, 0.12);
+  display: grid;
+  align-content: start;
+  gap: 0;
+  min-height: 100%;
+  padding: 112px 30px 30px;
+  background:
+    radial-gradient(circle at top right, var(--team-accent), transparent 36%),
+    linear-gradient(180deg, rgba(18, 19, 23, 0.98), rgba(9, 10, 12, 0.99));
+  border-color: rgba(255, 255, 255, 0.1);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+  z-index: 1;
+}
+
+.team-role::before {
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 34px),
+    linear-gradient(rgba(255, 255, 255, 0.032) 0 1px, transparent 1px 34px);
+  background-size: 34px 100%, 100% 34px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.94), rgba(0, 0, 0, 0.56) 60%, transparent 100%);
+  opacity: 0.44;
+}
+
+.team-role::after {
+  top: 24px;
+  right: 24px;
+  width: 128px;
+  height: 88px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  opacity: 0.68;
+}
+
+.team-role-regulation {
+  --team-accent: rgba(161, 189, 216, 0.18);
+  margin-top: 36px;
+}
+
+.team-role-regulation::after {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 18px),
+    linear-gradient(rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 18px),
+    linear-gradient(180deg, transparent 14%, rgba(255, 255, 255, 0.16) 14% 18%, transparent 18% 34%, rgba(255, 255, 255, 0.11) 34% 38%, transparent 38% 100%);
+  background-size: 18px 100%, 100% 18px, 100% 100%;
+}
+
+.team-role-offense {
+  --team-accent: rgba(255, 255, 255, 0.12);
+}
+
+.team-role-offense::after {
+  background:
+    radial-gradient(circle at center, transparent 0 22px, rgba(255, 255, 255, 0.12) 22px 23px, transparent 23px 44px, rgba(255, 255, 255, 0.08) 44px 45px, transparent 45px),
+    radial-gradient(circle at 66% 32%, rgba(255, 255, 255, 0.65) 0 2px, transparent 3px),
+    linear-gradient(135deg, transparent 24%, rgba(255, 255, 255, 0.18) 50%, transparent 72%);
+}
+
+.team-role-defense {
+  --team-accent: rgba(123, 153, 181, 0.2);
+  margin-top: 58px;
+}
+
+.team-role-defense::after {
+  background:
+    linear-gradient(90deg, transparent 0 14%, rgba(255, 255, 255, 0.16) 14% 15%, transparent 15% 100%),
+    linear-gradient(180deg, transparent 0 44%, rgba(255, 255, 255, 0.16) 44% 45%, transparent 45%),
+    radial-gradient(circle at 28% 68%, rgba(255, 255, 255, 0.38) 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.12), transparent 30%);
+}
+
+.team-role .client-group-title {
+  margin-bottom: 16px;
+}
+
+.team-role .client-group-title::after {
+  content: "";
+  display: block;
+  width: 82px;
+  height: 1px;
+  margin-top: 12px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.34), transparent);
+}
+
+.team-role h3 {
+  margin-bottom: 18px;
+  max-width: 15ch;
+}
+
+.team-role-points {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.team-role-points li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--muted-strong);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.team-role-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.05);
+}
+
+.team-role .audience-tags {
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+.team-role .audience-tags span {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.team-panel-summary {
+  margin-top: 30px;
+  padding: clamp(26px, 3vw, 34px);
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(140, 171, 198, 0.16), transparent 48%),
+    linear-gradient(90deg, rgba(18, 20, 23, 0.98), rgba(12, 13, 15, 0.95) 42%, rgba(18, 20, 23, 0.98));
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.team-panel-summary::before {
+  inset: 18px 20px auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+}
+
+.team-panel-summary::after {
+  left: 50%;
+  top: 50%;
+  width: min(40vw, 340px);
+  height: min(40vw, 340px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 0 0 34px rgba(255, 255, 255, 0.02),
+    0 0 0 68px rgba(255, 255, 255, 0.014);
+  opacity: 0.34;
+  animation: team-pulse 6.4s ease-in-out infinite;
+}
+
+.team-panel-summary p {
+  margin: 0 auto;
+  max-width: 62ch;
+  color: var(--muted-strong);
 }
 
 .audience-tags {
@@ -621,6 +1065,36 @@ textarea::placeholder {
   .approach-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .team-panel-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .team-panel-intro p:last-child {
+    max-width: 480px;
+  }
+
+  .team-proof-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .team-proof-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .team-role-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .team-role-grid::before,
+  .team-role-grid::after {
+    inset-inline: 12%;
+  }
+
+  .team-role-defense {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 860px) {
@@ -651,6 +1125,52 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
 
+  .team-role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-proof-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .team-proof-card:last-child {
+    grid-column: auto;
+  }
+
+  .team::before {
+    inset: 58px -12% 42px;
+  }
+
+  .team::after {
+    inset: 112px 4% 82px;
+  }
+
+  .team-panel-intro p:last-child {
+    max-width: none;
+  }
+
+  .team-role-grid::before,
+  .team-role-grid::after {
+    display: none;
+  }
+
+  .team-role-regulation,
+  .team-role-defense {
+    margin-top: 0;
+  }
+
+  .team-role.client-group {
+    padding: 112px 24px 24px;
+  }
+
+  .team-role::after {
+    left: 24px;
+    right: 24px;
+    width: auto;
+    height: 64px;
+    border-radius: 18px;
+  }
+
   .contact-form,
   .hero-panel,
   .timeline-card,
@@ -663,6 +1183,11 @@ textarea::placeholder {
   .footer-meta {
     text-align: left;
   }
+
+  .team-panel-summary::after {
+    width: 220px;
+    height: 220px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -671,7 +1196,7 @@ textarea::placeholder {
   }
 
   .brand-logo {
-    width: min(62vw, 214px);
+    width: min(46vw, 182px);
   }
 
   .nav a {
@@ -682,7 +1207,10 @@ textarea::placeholder {
     margin-top: 4px;
   }
 
-  .brand,
+  .brand {
+    padding: 8px 10px;
+  }
+
   .nav {
     padding: 12px 14px;
   }
@@ -704,6 +1232,47 @@ textarea::placeholder {
   .form-actions .button {
     width: 100%;
   }
+
+  .team::before {
+    inset: 40px -16% 34px;
+  }
+
+  .team::after {
+    inset: 98px 0 68px;
+    opacity: 0.28;
+  }
+
+  .team-panel-intro {
+    gap: 18px;
+  }
+
+  .team-panel-intro p:first-child {
+    font-size: 1.08rem;
+  }
+
+  .team-panel-intro p:last-child {
+    padding: 72px 18px 18px;
+    border-radius: 20px;
+  }
+
+  .team-panel-intro p:last-child::before {
+    inset-inline: 16px;
+    height: 36px;
+  }
+
+  .team-role.client-group {
+    padding: 104px 24px 24px;
+  }
+
+  .team-role::after {
+    left: 18px;
+    right: 18px;
+    top: 18px;
+  }
+
+  .team-panel-summary {
+    padding-inline: 20px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -714,14 +1283,61 @@ textarea::placeholder {
   .skip-link,
   .topbar-shell,
   .topbar,
+  .brand,
   .brand-logo,
+  .nav,
+  .nav a,
   .reveal,
-  .button {
+  .button,
+  .team-panel,
+  .team-panel::before,
+  .team-panel::after {
     transition: none;
   }
 
   .js-ready .reveal {
     opacity: 1;
     transform: none;
+  }
+
+  .team-panel-intro::after,
+  .team-panel-summary::after,
+  .team-role {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .team-role.reveal.is-visible:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 24px 44px rgba(0, 0, 0, 0.28);
+  }
+}
+
+@keyframes team-scan {
+  0%,
+  100% {
+    opacity: 0.24;
+    transform: translateX(-4%);
+  }
+
+  50% {
+    opacity: 0.76;
+    transform: translateX(6%);
+  }
+}
+
+@keyframes team-pulse {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+
+  50% {
+    opacity: 0.42;
+    transform: translate(-50%, -50%) scale(1.04);
   }
 }
