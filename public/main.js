@@ -9,7 +9,7 @@ const form = document.querySelector("#contact-form");
 const statusNode = document.querySelector("#form-status");
 const submitButton = form?.querySelector("button[type='submit']");
 const filterButtons = Array.from(document.querySelectorAll(".matrix-filter"));
-const matrixRows = Array.from(document.querySelectorAll(".capability-matrix tbody tr"));
+const matrixRows = Array.from(document.querySelectorAll(".capability-matrix [data-domain]"));
 const uptimeNode = document.querySelector("[data-uptime]");
 const nowNode = document.querySelector("[data-now]");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");

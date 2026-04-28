@@ -164,33 +164,20 @@ p {
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: clamp(18px, 3vw, 36px);
   align-items: center;
-  min-height: 72px;
+  min-height: 88px;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  width: 168px;
-  min-width: 168px;
+  width: 124px;
+  min-width: 124px;
 }
 
-.brand-wordmark,
-.footer-wordmark {
-  color: var(--text);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 1.42rem;
-  font-weight: 600;
-  letter-spacing: 0;
-}
-
-.brand-wordmark::after {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-left: 10px;
-  border: 1px solid var(--accent);
-  vertical-align: 0.18em;
+.brand-logo {
+  width: auto;
+  height: 74px;
+  object-fit: contain;
 }
 
 .nav {
@@ -610,44 +597,31 @@ dd {
   gap: 18px;
 }
 
-.table-wrap {
-  overflow-x: auto;
+.matrix-list {
+  display: grid;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 720px;
-}
-
-th,
-td {
+.matrix-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+  gap: 20px;
+  align-items: center;
+  padding: 18px 20px;
   border-bottom: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  padding: 18px 16px;
-  color: var(--muted-strong);
-  text-align: center;
-  vertical-align: middle;
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease;
 }
 
-th:first-child,
-td:first-child {
-  border-left: 0;
+.matrix-row:hover {
+  background: rgba(232, 232, 236, 0.025);
 }
 
-thead th {
-  color: var(--text);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.74rem;
-  font-weight: 500;
-  text-transform: uppercase;
+.matrix-row.is-filtered {
+  opacity: 0.28;
 }
 
-tbody th {
-  text-align: left;
-}
-
-tbody th strong,
+.matrix-copy strong,
 .sector span,
 .principle span {
   display: block;
@@ -656,7 +630,7 @@ tbody th strong,
   font-weight: 500;
 }
 
-tbody th span {
+.matrix-copy span {
   display: block;
   margin-top: 6px;
   color: var(--muted);
@@ -664,27 +638,25 @@ tbody th span {
   line-height: 1.55;
 }
 
-tbody tr {
-  transition:
-    opacity 160ms ease,
-    background-color 160ms ease;
+.matrix-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
-tbody tr:hover {
-  background: rgba(232, 232, 236, 0.025);
-}
-
-tbody tr.is-filtered {
-  opacity: 0.28;
-}
-
-.matrix-dot {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 5px var(--accent-dim);
+.matrix-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(212, 162, 76, 0.34);
+  border-radius: var(--radius);
+  background: rgba(212, 162, 76, 0.07);
+  color: var(--muted-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
 }
 
 .matrix-note {
@@ -871,21 +843,18 @@ tbody tr.is-filtered {
   overflow: hidden;
 }
 
-.dossier dl,
-.contact-protocol dl {
+.dossier dl {
   display: grid;
   gap: 0;
   margin: 0;
 }
 
-.dossier dl div,
-.contact-protocol dl div {
+.dossier dl div {
   padding: 18px 20px;
   border-bottom: 1px solid var(--line);
 }
 
-.dossier dl div:last-child,
-.contact-protocol dl div:last-child {
+.dossier dl div:last-child {
   border-bottom: 0;
 }
 
@@ -910,9 +879,29 @@ tbody tr.is-filtered {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.contact-protocol {
-  margin-top: 28px;
-  overflow: hidden;
+.contact-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin: 26px 0 0;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.contact-meta a {
+  color: var(--text);
+}
+
+.contact-meta span {
+  position: relative;
+}
+
+.contact-meta span::before {
+  content: "/";
+  margin-right: 18px;
+  color: var(--accent);
 }
 
 .contact-form {
@@ -999,10 +988,11 @@ textarea::placeholder {
   border-top: 1px solid var(--line);
 }
 
-.footer-wordmark {
-  display: inline-block;
+.footer-logo {
+  width: auto;
+  height: 70px;
   margin-bottom: 14px;
-  font-size: 1.2rem;
+  object-fit: contain;
 }
 
 .footer-brand p {
@@ -1099,8 +1089,12 @@ textarea::placeholder {
   }
 
   .brand {
-    width: 152px;
-    min-width: 152px;
+    width: 96px;
+    min-width: 96px;
+  }
+
+  .brand-logo {
+    height: 58px;
   }
 
   .nav {

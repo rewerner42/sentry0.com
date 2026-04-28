@@ -51,7 +51,7 @@
     <header class="topbar-shell">
       <div class="topbar site-shell">
         <a class="brand" href="#home" aria-label="Sentry0 home">
-          <span class="brand-wordmark">SENTRY0</span>
+          <img class="brand-logo" src="/logo.png" alt="Sentry0" width="253" height="202" />
         </a>
 
         <nav class="nav" aria-label="Primary">
@@ -193,80 +193,69 @@
                 <span>Capability</span>
                 <span>Applicability</span>
               </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Capability</th>
-                      <th>Offensive Security</th>
-                      <th>AI / LLM Red Teaming</th>
-                      <th>Security Advisory</th>
-                      <th>Response</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr data-domain="offensive">
-                      <th>
-                        <strong>Adversary Emulation</strong>
-                        <span>Realistic simulation of sophisticated threats.</span>
-                      </th>
-                      <td><span class="matrix-dot"></span></td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td>-</td>
-                      <td>-</td>
-                    </tr>
-                    <tr data-domain="offensive ai">
-                      <th>
-                        <strong>Application &amp; API Assessment</strong>
-                        <span>Find and exploit weakness before adversaries do.</span>
-                      </th>
-                      <td><span class="matrix-dot"></span></td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td>-</td>
-                      <td>-</td>
-                    </tr>
-                    <tr data-domain="ai advisory">
-                      <th>
-                        <strong>AI / LLM Red Teaming</strong>
-                        <span>Evaluate misuse, safety, retrieval, and model risk.</span>
-                      </th>
-                      <td>-</td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td>-</td>
-                    </tr>
-                    <tr data-domain="offensive advisory response">
-                      <th>
-                        <strong>Attack Surface Management</strong>
-                        <span>Map, monitor, and reduce exposed paths.</span>
-                      </th>
-                      <td><span class="matrix-dot"></span></td>
-                      <td>-</td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td><span class="matrix-dot"></span></td>
-                    </tr>
-                    <tr data-domain="advisory">
-                      <th>
-                        <strong>Security Advisory</strong>
-                        <span>Strategic guidance for high-compliance programs.</span>
-                      </th>
-                      <td>-</td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td>-</td>
-                    </tr>
-                    <tr data-domain="response advisory">
-                      <th>
-                        <strong>Incident Response Readiness</strong>
-                        <span>Prepare, validate, and strengthen response plans.</span>
-                      </th>
-                      <td><span class="matrix-dot"></span></td>
-                      <td>-</td>
-                      <td><span class="matrix-dot"></span></td>
-                      <td><span class="matrix-dot"></span></td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="matrix-list" role="list">
+                <article class="matrix-row" data-domain="offensive" role="listitem">
+                  <div class="matrix-copy">
+                    <strong>Adversary Emulation</strong>
+                    <span>Realistic simulation of sophisticated threats.</span>
+                  </div>
+                  <div class="matrix-tags" aria-label="Applicable domains">
+                    <span>Offensive Security</span>
+                    <span>AI / LLM Red Teaming</span>
+                  </div>
+                </article>
+                <article class="matrix-row" data-domain="offensive ai" role="listitem">
+                  <div class="matrix-copy">
+                    <strong>Application &amp; API Assessment</strong>
+                    <span>Find and exploit weakness before adversaries do.</span>
+                  </div>
+                  <div class="matrix-tags" aria-label="Applicable domains">
+                    <span>Offensive Security</span>
+                    <span>AI / LLM Red Teaming</span>
+                  </div>
+                </article>
+                <article class="matrix-row" data-domain="ai advisory" role="listitem">
+                  <div class="matrix-copy">
+                    <strong>AI / LLM Red Teaming</strong>
+                    <span>Evaluate misuse, safety, retrieval, and model risk.</span>
+                  </div>
+                  <div class="matrix-tags" aria-label="Applicable domains">
+                    <span>AI / LLM Red Teaming</span>
+                    <span>Security Advisory</span>
+                  </div>
+                </article>
+                <article class="matrix-row" data-domain="offensive advisory response" role="listitem">
+                  <div class="matrix-copy">
+                    <strong>Attack Surface Management</strong>
+                    <span>Map, monitor, and reduce exposed paths.</span>
+                  </div>
+                  <div class="matrix-tags" aria-label="Applicable domains">
+                    <span>Offensive Security</span>
+                    <span>Security Advisory</span>
+                    <span>Response</span>
+                  </div>
+                </article>
+                <article class="matrix-row" data-domain="advisory" role="listitem">
+                  <div class="matrix-copy">
+                    <strong>Security Advisory</strong>
+                    <span>Strategic guidance for high-compliance programs.</span>
+                  </div>
+                  <div class="matrix-tags" aria-label="Applicable domains">
+                    <span>AI / LLM Red Teaming</span>
+                    <span>Security Advisory</span>
+                  </div>
+                </article>
+                <article class="matrix-row" data-domain="response advisory" role="listitem">
+                  <div class="matrix-copy">
+                    <strong>Incident Response Readiness</strong>
+                    <span>Prepare, validate, and strengthen response plans.</span>
+                  </div>
+                  <div class="matrix-tags" aria-label="Applicable domains">
+                    <span>Offensive Security</span>
+                    <span>Security Advisory</span>
+                    <span>Response</span>
+                  </div>
+                </article>
               </div>
               <p class="matrix-note">Notes: Custom engagements tailored to mission, risk, and regulatory context.</p>
             </div>
@@ -428,22 +417,11 @@
                 Share the exposure, deadline, or security objective. We will respond with a clear
                 next step and a confidential path to scope.
               </p>
-              <div class="contact-protocol panel">
-                <dl>
-                  <div>
-                    <dt>Channel</dt>
-                    <dd><a href="mailto:hello@sentry0.ai">hello@sentry0.ai</a></dd>
-                  </div>
-                  <div>
-                    <dt>Protection</dt>
-                    <dd>Cloudflare Turnstile</dd>
-                  </div>
-                  <div>
-                    <dt>PGP</dt>
-                    <dd>Available on request</dd>
-                  </div>
-                </dl>
-              </div>
+              <p class="contact-meta">
+                <a href="mailto:hello@sentry0.ai">hello@sentry0.ai</a>
+                <span>Cloudflare Turnstile</span>
+                <span>PGP on request</span>
+              </p>
             </div>
 
             <form class="contact-form panel reveal" id="contact-form" novalidate>
@@ -507,7 +485,7 @@
 
       <footer class="footer">
         <div class="footer-brand">
-          <strong class="footer-wordmark">SENTRY0</strong>
+          <img class="footer-logo" src="/logo.png" alt="Sentry0" width="253" height="202" />
           <p>Operator-led cybersecurity for AI and regulated teams.</p>
         </div>
         <div class="footer-grid">
