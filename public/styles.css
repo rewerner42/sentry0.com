@@ -91,6 +91,7 @@ h3,
 .terminal-feed,
 .matrix-filter,
 .footer-grid,
+.footer-stamp,
 label span {
   font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   letter-spacing: 0;
@@ -170,13 +171,14 @@ p {
 .brand {
   display: inline-flex;
   align-items: center;
-  width: 124px;
-  min-width: 124px;
+  width: clamp(188px, 17vw, 236px);
+  min-width: clamp(188px, 17vw, 236px);
 }
 
 .brand-logo {
-  width: auto;
-  height: 74px;
+  width: 100%;
+  height: auto;
+  max-height: 58px;
   object-fit: contain;
 }
 
@@ -277,6 +279,34 @@ p {
   line-height: 1.6;
   overflow-wrap: anywhere;
   text-transform: uppercase;
+}
+
+.hero-kicker,
+.console-title,
+.title-with-mark {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.kicker-mark,
+.console-mark,
+.panel-mark {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.kicker-mark {
+  opacity: 0.86;
+}
+
+.console-mark,
+.panel-mark {
+  width: 22px;
+  height: 22px;
+  opacity: 0.9;
 }
 
 .hero-text {
@@ -989,8 +1019,8 @@ textarea::placeholder {
 }
 
 .footer-logo {
-  width: auto;
-  height: 70px;
+  width: min(100%, 220px);
+  height: auto;
   margin-bottom: 14px;
   object-fit: contain;
 }
@@ -1000,6 +1030,28 @@ textarea::placeholder {
   margin-bottom: 0;
   color: var(--muted);
   font-size: 0.92rem;
+}
+
+.footer-stamp {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  width: fit-content;
+  margin-top: 18px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(232, 232, 236, 0.025);
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.footer-stamp img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  opacity: 0.9;
 }
 
 .footer-grid {
@@ -1089,12 +1141,12 @@ textarea::placeholder {
   }
 
   .brand {
-    width: 96px;
-    min-width: 96px;
+    width: 210px;
+    min-width: 210px;
   }
 
   .brand-logo {
-    height: 58px;
+    max-height: 52px;
   }
 
   .nav {
@@ -1241,6 +1293,15 @@ textarea::placeholder {
   .hero-actions .button,
   .form-actions .button {
     width: 100%;
+  }
+
+  .brand {
+    width: 168px;
+    min-width: 168px;
+  }
+
+  .brand-logo {
+    max-height: 42px;
   }
 
   .terminal-feed,
