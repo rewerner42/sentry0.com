@@ -92,6 +92,8 @@ h3,
 .matrix-filter,
 .footer-grid,
 .footer-stamp,
+.brand-tagline,
+.service-points,
 label span {
   font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   letter-spacing: 0;
@@ -111,6 +113,7 @@ h2 {
   font-size: clamp(2rem, 3.8vw, 3.75rem);
   font-weight: 500;
   line-height: 1.08;
+  overflow-wrap: anywhere;
 }
 
 h3 {
@@ -127,7 +130,7 @@ p {
 }
 
 .site-shell {
-  width: min(calc(100% - 44px), var(--container));
+  width: min(calc(100vw - 44px), var(--container));
   margin: 0 auto;
 }
 
@@ -170,9 +173,11 @@ p {
 
 .brand {
   display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
   align-items: center;
-  width: clamp(188px, 17vw, 236px);
-  min-width: clamp(188px, 17vw, 236px);
+  width: clamp(214px, 18vw, 260px);
+  min-width: clamp(214px, 18vw, 260px);
 }
 
 .brand-logo {
@@ -180,6 +185,14 @@ p {
   height: auto;
   max-height: 58px;
   object-fit: contain;
+}
+
+.brand-tagline {
+  color: var(--muted);
+  font-size: clamp(0.57rem, 0.68vw, 0.68rem);
+  line-height: 1.35;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .nav {
@@ -257,6 +270,9 @@ p {
 
 .hero-copy,
 .ops-console,
+.capability-matrix,
+.matrix-list,
+.matrix-row,
 .section-heading,
 .panel {
   min-width: 0;
@@ -400,6 +416,7 @@ dd {
   margin: 0;
   color: var(--text);
   line-height: 1.52;
+  overflow-wrap: anywhere;
 }
 
 .panel,
@@ -477,6 +494,7 @@ dd {
   color: var(--muted-strong);
   font-size: 0.85rem;
   line-height: 1.52;
+  overflow-wrap: anywhere;
 }
 
 .terminal-feed span {
@@ -512,6 +530,11 @@ dd {
   align-items: center;
   padding: 8px 0;
   color: var(--muted-strong);
+}
+
+.module-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .module-row span:nth-child(2) {
@@ -583,6 +606,8 @@ dd {
 .section-heading-split > p {
   color: var(--muted-strong);
   font-size: 1.02rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .section-heading-split {
@@ -598,6 +623,7 @@ dd {
 }
 
 .matrix-filter {
+  max-width: 100%;
   min-height: 38px;
   padding: 0 13px;
   border: 1px solid var(--line);
@@ -627,6 +653,11 @@ dd {
   gap: 18px;
 }
 
+.service-layout {
+  grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.8fr);
+  align-items: start;
+}
+
 .matrix-list {
   display: grid;
 }
@@ -651,6 +682,15 @@ dd {
   opacity: 0.28;
 }
 
+.matrix-row > * {
+  min-width: 0;
+}
+
+.service-row {
+  grid-template-columns: minmax(210px, 0.52fr) minmax(0, 1fr);
+  align-items: start;
+}
+
 .matrix-copy strong,
 .sector span,
 .principle span {
@@ -658,6 +698,7 @@ dd {
   color: var(--text);
   font-family: "IBM Plex Mono", monospace;
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
 .matrix-copy span {
@@ -666,6 +707,50 @@ dd {
   color: var(--muted);
   font-size: 0.84rem;
   line-height: 1.55;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.service-copy span {
+  max-width: 34ch;
+}
+
+.service-console {
+  overflow: hidden;
+}
+
+.service-copy,
+.service-points {
+  max-width: 100%;
+}
+
+.service-points {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  color: var(--muted-strong);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  list-style: none;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.service-points li {
+  position: relative;
+  min-width: 0;
+  padding-left: 18px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.service-points li::before {
+  content: ">";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
 }
 
 .matrix-tags {
@@ -906,7 +991,7 @@ dd {
 .redaction span:nth-child(3) { width: 86%; }
 
 .sector-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .contact-meta {
@@ -1141,12 +1226,17 @@ textarea::placeholder {
   }
 
   .brand {
-    width: 210px;
-    min-width: 210px;
+    align-items: flex-start;
+    width: 230px;
+    min-width: 230px;
   }
 
   .brand-logo {
     max-height: 52px;
+  }
+
+  .brand-tagline {
+    text-align: left;
   }
 
   .nav {
@@ -1171,6 +1261,7 @@ textarea::placeholder {
 
   .hero,
   .capability-layout,
+  .service-layout,
   .operator-layout,
   .contact-layout {
     grid-template-columns: 1fr;
@@ -1190,7 +1281,7 @@ textarea::placeholder {
 
 @media (max-width: 860px) {
   .site-shell {
-    width: min(calc(100% - 28px), var(--container));
+    width: min(calc(100vw - 28px), var(--container));
   }
 
   h1 {
@@ -1202,6 +1293,8 @@ textarea::placeholder {
 
   h2 {
     max-width: none;
+    font-size: clamp(1.55rem, 7vw, 2.15rem);
+    line-height: 1.14;
   }
 
   .section-heading-split,
@@ -1253,8 +1346,17 @@ textarea::placeholder {
   }
 
   .diagram-legend,
+  .service-row,
   .sector-grid {
     grid-template-columns: 1fr;
+  }
+
+  .service-points {
+    font-size: 0.74rem;
+  }
+
+  .service-row {
+    gap: 14px;
   }
 
   .path-grid {
@@ -1304,10 +1406,19 @@ textarea::placeholder {
     max-height: 42px;
   }
 
+  .brand-tagline {
+    font-size: 0.54rem;
+  }
+
+  .matrix-filter {
+    flex: 1 1 calc(50% - 6px);
+  }
+
   .terminal-feed,
   .module-table,
   .telemetry,
   .contact-form,
+  .service-row,
   .principle,
   .sector {
     padding: 18px;
